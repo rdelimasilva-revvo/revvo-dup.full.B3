@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PlusCircle, Search, MoreVertical, Power, Trash2, ArrowUpDown, Filter, AlertTriangle, RefreshCw } from 'lucide-react';
+import { PlusCircle, Search, MoreVertical, Power, Trash2, ArrowUpDown, Filter, RefreshCw } from 'lucide-react';
 import { supabase } from '@/modules/automacoes/lib/supabase';
 import { useStore } from '@/modules/automacoes/store/useStore';
 import { formatToBRL } from '@/modules/automacoes/utils/currencyUtils';
@@ -272,22 +272,6 @@ export default function RulesList({ basePath = '/app/automacoes', defaultTab = '
           message={notification.message}
           onClose={() => setNotification(null)}
         />
-      )}
-
-      {usingMockData && (
-        <div className="mb-4 flex items-center gap-3 px-4 py-3 bg-amber-50 border border-amber-200 rounded-lg">
-          <AlertTriangle size={16} className="text-amber-600 flex-shrink-0" />
-          <p className="text-sm text-amber-800 flex-1">
-            Exibindo dados de demonstracao. A conexao com o servidor nao esta disponivel no momento.
-          </p>
-          <button
-            onClick={loadRules}
-            className="flex items-center gap-1.5 text-sm font-medium text-amber-700 hover:text-amber-900 transition-colors"
-          >
-            <RefreshCw size={14} />
-            Tentar novamente
-          </button>
-        </div>
       )}
 
       {error && !usingMockData && (

@@ -88,7 +88,7 @@ const MainContent = ({ currentView, onNavigate }: MainContentProps) => {
         {currentView === ROUTES.AGENTE_INTERMEDIADOR_VISAO_NEGOCIACOES && <VisaoNegociacoes />}
         {currentView === ROUTES.FORNECEDOR_DIVERGENTE && <NovosRecebedores />}
         {currentView === ROUTES.FORNECEDOR_DIVERGENTE_LEGACY && <FornecedorDivergente />}
-        {currentView === ROUTES.PAYMENT_REPORT && <PaymentReport />}
+        {currentView.startsWith(ROUTES.PAYMENT_REPORT) && <PaymentReport />}
         {currentView === ROUTES.DUAS_ETAPAS && <DuasEtapas />}
         {currentView === ROUTES.PROFILES_ACCESS && <ProfilesAccess />}
         {currentView === ROUTES.USER_PROFILE && <UserProfilePage />}

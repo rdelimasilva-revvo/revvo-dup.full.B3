@@ -42,6 +42,12 @@ export function buildBreadcrumbs(currentView: string): BreadcrumbItem[] {
 
   if (currentView === 'home') return items;
 
+  if (currentView.startsWith('payment-report/')) {
+    items.push({ label: getBreadcrumbLabel('payment-report'), route: 'payment-report' });
+    items.push({ label: 'Detalhe do Lote' });
+    return items;
+  }
+
   const parts = currentView.split('/');
 
   if (parts.length > 1) {
