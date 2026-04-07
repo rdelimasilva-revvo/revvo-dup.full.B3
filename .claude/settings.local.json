@@ -10,7 +10,10 @@
       "Bash(npx vite:*)",
       "Bash(node -e ':*)",
       "WebFetch(domain:amazing-nasturtium-838f13.netlify.app)",
-      "Bash(start:*)"
+      "Bash(start:*)",
+      "Bash(npx netlify-cli:*)",
+      "Bash(npm list:*)",
+      "Bash(wc -l src/**/*.tsx)"
     ]
   }
 }
