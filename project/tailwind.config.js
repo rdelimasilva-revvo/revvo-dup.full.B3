@@ -14,6 +14,7 @@ export default {
         'input': '48px'
       },
       fontFamily: {
+        'sans': ['Onest', 'sans-serif'],
         'onest': ['Onest', 'sans-serif']
       },
       backgroundImage: {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { menuItems, footerMenuItems, findParentRoutes } from './menuConfig';
+import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { menuItems, footerMenuItems } from './menuConfig';
 import MenuItem from './MenuItem';
 import type { SidebarProps } from './types';
 
@@ -18,7 +19,11 @@ const findAllParentRoutes = (items: any[], targetRoute: string): string[] => {
   return [];
 };
 
-const Sidebar: React.FC<SidebarProps> = ({ onMenuClick, activeView }) => {
+const Sidebar: React.FC<SidebarProps> = ({ onMenuClick, activeView, collapsed: controlledCollapsed, onToggleCollapse }) => {
+  const [internalCollapsed, setInternalCollapsed] = useState(false);
+  const collapsed = controlledCollapsed ?? internalCollapsed;
+  const toggleCollapse = onToggleCollapse ?? (() => setInternalCollapsed(prev => !prev));
+
   const [openMenus, setOpenMenus] = useState<Set<string>>(new Set());
 
   useEffect(() => {
@@ -31,15 +36,14 @@ const Sidebar: React.FC<SidebarProps> = ({ onMenuClick, activeView }) => {
 
   const handleMenuClick = (route: string, hasSubmenu?: boolean) => {
     if (hasSubmenu) {
+      if (collapsed) {
+        toggleCollapse();
+      }
       setOpenMenus(prev => {
         const newOpenMenus = new Set<string>();
-        
-        // If menu is already open, close it and its children
         if (prev.has(route)) {
-          // Close everything by returning empty set
           return newOpenMenus;
         } else {
-          // Open the menu and ensure parent menus are open
           const allMenuItems = [...menuItems, ...footerMenuItems];
           const parentRoutes = findAllParentRoutes(allMenuItems, route);
           parentRoutes.forEach(r => newOpenMenus.add(r));
@@ -48,7 +52,6 @@ const Sidebar: React.FC<SidebarProps> = ({ onMenuClick, activeView }) => {
         return newOpenMenus;
       });
     } else {
-      // Use the route directly from the menu configuration
       onMenuClick(route);
     }
   };
@@ -63,21 +66,37 @@ const Sidebar: React.FC<SidebarProps> = ({ onMenuClick, activeView }) => {
   };
 
   return (
-    <aside className="w-[220px] bg-white border-r border-[#e5e5e5] h-[calc(100vh-48px)] flex flex-col flex-shrink-0">
-      <nav className="flex-1 py-2 overflow-y-auto flex flex-col">
-        <div className="px-3 py-2.5 border-b border-[#e5e5e5] mb-2 flex items-center">
-          <img
-            src="https://07iiwshc01.ufs.sh/f/0LiFpsMBmMUk1KdzLnbanW4CiUlp7AaDvuoZtTx8NYPy2jes"
-            alt="Logo"
-            className="h-4 w-auto"
-          />
+    <aside
+      className={`bg-white border-r border-[#e5e5e5] h-[calc(100vh-48px)] flex flex-col flex-shrink-0 transition-all duration-200 ${
+        collapsed ? 'w-[60px]' : 'w-[220px]'
+      }`}
+    >
+      <nav className="flex-1 py-2 overflow-y-auto overflow-x-hidden flex flex-col">
+        {/* Logo + toggle */}
+        <div className={`border-b border-[#e5e5e5] mb-2 flex items-center ${collapsed ? 'px-2 py-2.5 justify-center' : 'px-3 py-2.5 justify-between'}`}>
+          {!collapsed && (
+            <img
+              src="https://07iiwshc01.ufs.sh/f/0LiFpsMBmMUk1KdzLnbanW4CiUlp7AaDvuoZtTx8NYPy2jes"
+              alt="Logo"
+              className="h-7 w-auto"
+            />
+          )}
+          <button
+            onClick={toggleCollapse}
+            className="p-1 rounded hover:bg-gray-100 text-gray-500 hover:text-gray-700 transition-colors"
+            title={collapsed ? 'Expandir menu' : 'Recolher menu'}
+          >
+            {collapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
+          </button>
         </div>
+
+        {/* Menu items */}
         <div className="flex-1">
           {menuItems.map((item) => (
-            <MenuItem 
+            <MenuItem
               key={item.route}
-              icon={item.icon} 
-              label={item.label} 
+              icon={item.icon}
+              label={item.label}
               route={item.route}
               isActive={isMenuActive(item)}
               isOpen={isMenuOpen(item.route)}
@@ -85,15 +104,28 @@ const Sidebar: React.FC<SidebarProps> = ({ onMenuClick, activeView }) => {
               items={item.items}
               onItemClick={onMenuClick}
               activeView={activeView}
+              collapsed={collapsed}
             />
           ))}
         </div>
+
+        {/* Partner logo */}
+        <div className={`px-3 py-3 flex items-center justify-center ${collapsed ? '' : 'gap-2.5'}`}>
+          <img
+            src="https://07iiwshc01.ufs.sh/f/0LiFpsMBmMUkmaGlKR0N7ktVqOnBU4LbKgYziJFTXcws1d5Z"
+            alt="Partner"
+            className={`w-auto ${collapsed ? 'h-5' : 'h-8'}`}
+          />
+          {!collapsed && <span className="text-xs font-semibold text-gray-400">Partner</span>}
+        </div>
+
+        {/* Footer items */}
         <div className="border-t border-[#e5e5e5] pt-2">
           {footerMenuItems.map((item) => (
-            <MenuItem 
+            <MenuItem
               key={item.route}
-              icon={item.icon} 
-              label={item.label} 
+              icon={item.icon}
+              label={item.label}
               route={item.route}
               isActive={isMenuActive(item)}
               isOpen={isMenuOpen(item.route)}
@@ -101,6 +133,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onMenuClick, activeView }) => {
               items={item.items}
               onItemClick={onMenuClick}
               activeView={activeView}
+              collapsed={collapsed}
             />
           ))}
         </div>

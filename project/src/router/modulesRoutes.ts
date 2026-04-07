@@ -3,6 +3,7 @@ import { escrituracaoDuplicataRoutes } from '@/modules/escrituracaoDuplicata/rou
 import { notificacaoDuplicataRoutes } from '@/modules/notificacaoDuplicata/routes';
 import { gestorDomicilioRoutes } from '@/modules/gestorDomicilio/routes';
 import { automacoesRoutes } from '@/modules/automacoes/routes';
+import { duplicatasRoutes } from '@/modules/duplicatas/routes';
 
 export interface ModuleRoute {
   path: string;
@@ -14,4 +15,5 @@ export const modulesRoutes: ModuleRoute[] = [
   ...notificacaoDuplicataRoutes,
   ...gestorDomicilioRoutes,
   ...automacoesRoutes,
+  ...duplicatasRoutes,
 ];

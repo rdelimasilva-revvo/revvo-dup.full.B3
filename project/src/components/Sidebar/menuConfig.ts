@@ -17,6 +17,7 @@ export const menuItems = [
     route: ROUTES.RECEIVABLES,
     items: [
       { label: 'Escrituração', route: ROUTES.RECEIVABLES },
+      { label: 'Duplicatas', route: ROUTES.DUPLICATAS },
     ],
   },
   {
@@ -27,7 +28,8 @@ export const menuItems = [
       { label: 'Duplicatas Recebidas', route: ROUTES.NOTIFICACOES_DUPLICATAS },
       { label: 'Gestão de Domicílio', route: ROUTES.DOMICILE_MANAGEMENT_NEW },
       { label: 'Novos Recebedores', route: ROUTES.FORNECEDOR_DIVERGENTE_LEGACY },
-      { label: 'Relatório de Pagamentos', route: ROUTES.PAYMENT_REPORT }
+      { label: 'Relatório de Pagamentos', route: ROUTES.PAYMENT_REPORT },
+      { label: 'Duas Etapas', route: ROUTES.DUAS_ETAPAS }
     ],
   },
   {
@@ -39,11 +41,19 @@ export const menuItems = [
     icon: Users,
     label: 'Agente Intermediador',
     route: ROUTES.AGENTE_INTERMEDIADOR,
+    items: [
+      { label: 'Fornecedores', route: ROUTES.AGENTE_INTERMEDIADOR_FORNECEDORES },
+      { label: 'Visão de Negociações', route: ROUTES.AGENTE_INTERMEDIADOR_VISAO_NEGOCIACOES },
+    ],
   },
   {
     icon: CloudCog,
     label: 'Automações',
-    route: ROUTES.AUTOMACOES,
+    route: ROUTES.AUTOMACOES_MANIFESTACAO,
+    items: [
+      { label: 'Manifestação', route: ROUTES.AUTOMACOES_MANIFESTACAO },
+      { label: 'Escrituração', route: ROUTES.AUTOMACOES_ESCRITURACAO },
+    ],
   },
 ] as const;
 

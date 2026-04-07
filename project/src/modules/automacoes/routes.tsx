@@ -7,4 +7,12 @@ export const automacoesRoutes = [
     path: ROUTES.AUTOMACOES,
     element: <Automacoes />,
   },
+  {
+    path: ROUTES.AUTOMACOES_MANIFESTACAO,
+    element: <Automacoes defaultTab="manifestacao" />,
+  },
+  {
+    path: ROUTES.AUTOMACOES_ESCRITURACAO,
+    element: <Automacoes defaultTab="escrituracao" />,
+  },
 ];

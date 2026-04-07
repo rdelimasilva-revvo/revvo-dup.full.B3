@@ -22,4 +22,6 @@ export interface MenuItemProps {
 export interface SidebarProps {
   onMenuClick: (view: string) => void;
   activeView: string;
+  collapsed?: boolean;
+  onToggleCollapse?: () => void;
 }

@@ -669,13 +669,12 @@ const OptInManagement = () => {
   }, [error]);
 
   return (
-    <div className="p-6 bg-white min-h-full">
-      <div className="max-w-7xl mx-auto">
+    <div className="p-8 min-h-full max-h-full overflow-y-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Gestão de Opt-in</h1>
-            <p className="text-gray-600">Gerencie as autorizações de opt-in dos financiadores</p>
+            <h1 className="text-2xl font-bold">Gestão de Opt-in</h1>
+            <p className="text-gray-500 mt-1">Gerencie as autorizações de opt-in dos financiadores</p>
           </div>
           <button
             onClick={() => {
@@ -684,7 +683,7 @@ const OptInManagement = () => {
               setShowAddModal(true);
             }}
             disabled={isLoading}
-            className="flex items-center px-4 h-8 bg-revvo-blue text-white rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+            className="flex items-center px-4 h-9 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
           >
             <Plus className="w-4 h-4 mr-2" />
             Novo Opt-in
@@ -697,150 +696,128 @@ const OptInManagement = () => {
           </div>
         )}
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-            <div className="flex items-center">
-              <Building2 className="w-8 h-8 text-blue-600 mr-3" />
-              <div>
-                <p className="text-sm text-blue-600 font-medium">Total de Opt-ins</p>
-                <p className="text-2xl font-bold text-blue-900">{optInRecords.length}</p>
-              </div>
+        {/* Summary Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div className="p-6 rounded-lg border border-gray-200">
+            <div className="flex items-center justify-between mb-4">
+              <Building2 className="w-8 h-8 text-blue-600" />
             </div>
+            <h3 className="text-2xl font-bold text-gray-900">{optInRecords.length}</h3>
+            <p className="text-sm font-medium text-gray-700">Total de Opt-ins</p>
+            <p className="text-xs text-gray-500">Financiadores cadastrados</p>
           </div>
-
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-            <div className="flex items-center">
-              <ToggleRight className="w-8 h-8 text-blue-600 mr-3" />
-              <div>
-                <p className="text-sm text-blue-600 font-medium">Ativos</p>
-                <p className="text-2xl font-bold text-blue-900">
-                  {optInRecords.filter(record => record.ativo).length}
-                </p>
-              </div>
+          <div className="p-6 rounded-lg border border-gray-200">
+            <div className="flex items-center justify-between mb-4">
+              <ToggleRight className="w-8 h-8 text-green-600" />
             </div>
+            <h3 className="text-2xl font-bold text-gray-900">
+              {optInRecords.filter(record => record.ativo).length}
+            </h3>
+            <p className="text-sm font-medium text-gray-700">Ativos</p>
+            <p className="text-xs text-gray-500">{((optInRecords.filter(r => r.ativo).length / optInRecords.length) * 100).toFixed(1)}% do total</p>
           </div>
-
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-            <div className="flex items-center">
-              <Calendar className="w-8 h-8 text-yellow-600 mr-3" />
-              <div>
-                <p className="text-sm text-yellow-600 font-medium">Vencendo em 30 dias</p>
-                <p className="text-2xl font-bold text-yellow-900">
-                  {optInRecords.filter(record => isExpiringSoon(record.data_vencimento)).length}
-                </p>
-              </div>
+          <div className="p-6 rounded-lg border border-gray-200">
+            <div className="flex items-center justify-between mb-4">
+              <Calendar className="w-8 h-8 text-amber-600" />
             </div>
+            <h3 className="text-2xl font-bold text-gray-900">
+              {optInRecords.filter(record => isExpiringSoon(record.data_vencimento)).length}
+            </h3>
+            <p className="text-sm font-medium text-gray-700">Vencendo em 30 dias</p>
+            <p className="text-xs text-gray-500">Requerem atenção</p>
           </div>
-
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-            <div className="flex items-center">
-              <Calendar className="w-8 h-8 text-red-600 mr-3" />
-              <div>
-                <p className="text-sm text-red-600 font-medium">Vencidos</p>
-                <p className="text-2xl font-bold text-red-900">
-                  {optInRecords.filter(record => isExpired(record.data_vencimento)).length}
-                </p>
-              </div>
+          <div className="p-6 rounded-lg border border-gray-200">
+            <div className="flex items-center justify-between mb-4">
+              <Calendar className="w-8 h-8 text-red-600" />
             </div>
+            <h3 className="text-2xl font-bold text-gray-900">
+              {optInRecords.filter(record => isExpired(record.data_vencimento)).length}
+            </h3>
+            <p className="text-sm font-medium text-gray-700">Vencidos</p>
+            <p className="text-xs text-gray-500">Necessitam renovação</p>
           </div>
         </div>
 
         {/* Table */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <div className="overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Financiador
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Data de Realização
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Data de Vencimento
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Termo de Adesão
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Ações
-                  </th>
+              <thead>
+                <tr className="bg-gray-50 border-b border-gray-200">
+                  <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Financiador</th>
+                  <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Data de Realização</th>
+                  <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Data de Vencimento</th>
+                  <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Termo de Adesão</th>
+                  <th className="text-center px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                  <th className="text-center px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="divide-y divide-gray-200">
                 {paginatedRecords.map((record) => (
-                  <tr key={record.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <Building2 className="w-5 h-5 text-gray-400 mr-3" />
-                        <span className="text-sm font-medium text-gray-900">
-                          {record.financiador}
-                        </span>
+                  <tr key={record.id} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center justify-center w-9 h-9 bg-blue-100 text-blue-700 rounded-full text-sm font-bold">
+                          {record.financiador.charAt(0)}
+                        </div>
+                        <span className="font-medium text-gray-900 text-sm">{record.financiador}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td className="px-6 py-4 text-sm text-gray-700">
                       {formatDate(record.data_realizacao)}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-6 py-4">
                       <span className={`text-sm ${
-                        isExpired(record.data_vencimento) 
-                          ? 'text-red-600 font-medium' 
+                        isExpired(record.data_vencimento)
+                          ? 'text-red-600 font-medium'
                           : isExpiringSoon(record.data_vencimento)
-                            ? 'text-yellow-600 font-medium'
-                            : 'text-gray-900'
+                            ? 'text-amber-600 font-medium'
+                            : 'text-gray-700'
                       }`}>
                         {formatDate(record.data_vencimento)}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-6 py-4">
                       {record.termo_renovacao ? (
                         <button
                           onClick={() => handleShowTerms(record.termo_renovacao!)}
-                          className="flex items-center text-revvo-blue hover:text-blue-600 transition-colors"
+                          className="flex items-center gap-1 text-blue-600 hover:text-blue-800 hover:underline transition-colors text-sm"
                         >
-                          <FileText className="w-4 h-4 mr-1" />
-                          <span className="text-sm">Ver Termo</span>
+                          <FileText className="w-4 h-4" />
+                          Ver Termo
                         </button>
                       ) : (
                         <span className="text-sm text-gray-400">Não disponível</span>
                       )}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-6 py-4 text-center">
                       <button
                         onClick={() => handleToggleActive(record)}
                         disabled={isLoading}
-                        className="flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="inline-flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        {record.ativo ? (
-                          <ToggleRight className="w-6 h-6 text-green-500 hover:text-green-600" />
-                        ) : (
-                          <ToggleLeft className="w-6 h-6 text-gray-400 hover:text-gray-500" />
-                        )}
-                        <span className={`ml-2 text-sm ${
-                          record.ativo ? 'text-green-600' : 'text-gray-500'
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                          record.ativo
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-red-100 text-red-800'
                         }`}>
                           {record.ativo ? 'Ativo' : 'Inativo'}
                         </span>
                       </button>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <div className="flex items-center space-x-2">
+                    <td className="px-6 py-4 text-center">
+                      <div className="flex items-center justify-center gap-2">
                         <button
                           onClick={() => openEditModal(record)}
                           disabled={isLoading}
-                          className="text-revvo-blue hover:text-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="text-gray-500 hover:text-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           <Edit2 className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleDelete(record.id)}
                           disabled={isLoading}
-                          className="text-red-600 hover:text-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="text-gray-500 hover:text-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -850,10 +827,15 @@ const OptInManagement = () => {
                 ))}
               </tbody>
             </table>
-            <div className="flex justify-end gap-2 px-4 py-3">
+          </div>
+          <div className="flex justify-between items-center px-4 py-3 bg-gray-50 border-t border-gray-200">
+            <span className="text-sm text-gray-500">
+              {optInRecords.length} opt-in{optInRecords.length !== 1 ? 's' : ''} cadastrado{optInRecords.length !== 1 ? 's' : ''}
+            </span>
+            <div className="flex gap-2">
               {currentPage > 1 && (
                 <button
-                  className="h-8 px-3 border rounded-md text-sm"
+                  className="h-9 px-4 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors"
                   onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                   disabled={isLoading}
                 >
@@ -862,7 +844,7 @@ const OptInManagement = () => {
               )}
               {currentPage < totalPages && (
                 <button
-                  className="h-8 px-3 border rounded-md text-sm bg-[#0070F2] text-white"
+                  className="h-9 px-4 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
                   onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                   disabled={isLoading}
                 >
@@ -871,12 +853,9 @@ const OptInManagement = () => {
               )}
             </div>
           </div>
-
           {optInRecords.length === 0 && (
-            <div className="text-center py-12">
-              <Building2 className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-500 text-lg mb-2">Nenhum opt-in cadastrado</p>
-              <p className="text-gray-400">Clique em "Novo Opt-in" para começar</p>
+            <div className="text-center py-12 text-gray-500">
+              Nenhum opt-in cadastrado. Clique em "Novo Opt-in" para começar.
             </div>
           )}
         </div>
@@ -1059,12 +1038,11 @@ const OptInManagement = () => {
         {isLoading && (
           <div className="fixed inset-0 bg-black bg-opacity-20 flex items-center justify-center z-40">
             <div className="bg-white rounded-lg p-4 flex items-center">
-              <div className="inline-block h-6 w-6 animate-spin rounded-full border-4 border-solid border-revvo-blue border-r-transparent mr-3"></div>
+              <div className="inline-block h-6 w-6 animate-spin rounded-full border-4 border-solid border-blue-600 border-r-transparent mr-3"></div>
               <span className="text-gray-700">Processando...</span>
             </div>
           </div>
         )}
-      </div>
     </div>
   );
 };

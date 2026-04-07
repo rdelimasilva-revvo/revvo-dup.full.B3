@@ -427,7 +427,7 @@ function EscrituracaoDuplicata() {
 
   const handleEditClick = (invoice: Invoice) => {
     setEditFormData({
-      value: invoice.total.toFixed(2),
+      value: invoice.total.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
       dueDate: invoice.dueDate.split('/').reverse().join('-'),
       paymentMethod: 'TED/DOC',
       bank: invoice.bank.name,
@@ -573,7 +573,7 @@ function EscrituracaoDuplicata() {
           <div className="card">
             <h3>Recebimento (Faturado)</h3>
             <CardValue>
-              187,65mi <span style={{ color: 'var(--error)' }}>-5%</span>
+              187.650.000,00 <span style={{ color: 'var(--error)' }}>-5%</span>
             </CardValue>
             <CardSubtitle>Próximos 12 meses</CardSubtitle>
             <ResponsiveContainer width="100%" height={200}>
@@ -590,7 +590,7 @@ function EscrituracaoDuplicata() {
           <div className="card">
             <h3>Recebimento (Faturado + A faturar)</h3>
             <CardValue>
-              262,97mi <span style={{ color: 'var(--success)' }}>+12%</span>
+              262.970.000,00 <span style={{ color: 'var(--success)' }}>+12%</span>
             </CardValue>
             <CardSubtitle>Próximos 12 meses</CardSubtitle>
             <ResponsiveContainer width="100%" height={200}>
@@ -618,7 +618,7 @@ function EscrituracaoDuplicata() {
           <div className="card">
             <h3>Distribuição de recebíveis</h3>
             <CardValue>
-              805.56k <span style={{ color: 'var(--success)' }}>+8%</span>
+              805.560,00 <span style={{ color: 'var(--success)' }}>+8%</span>
             </CardValue>
             <CardSubtitle>Total de alocações</CardSubtitle>
             <ResponsiveContainer width="100%" height={200}>
@@ -630,7 +630,7 @@ function EscrituracaoDuplicata() {
                   innerRadius={35}
                   outerRadius={50}
                   dataKey="value"
-                  label={({ value }) => `${value.toFixed(2)}%`}
+                  label={({ value }) => `${value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`}
                 >
                   {pieData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />

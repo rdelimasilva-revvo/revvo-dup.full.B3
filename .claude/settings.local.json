@@ -5,7 +5,12 @@
       "Bash(npm run:*)",
       "Bash(gh repo:*)",
       "Bash(gh auth:*)",
-      "Bash(cp:*)"
+      "Bash(cp:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx vite:*)",
+      "Bash(node -e ':*)",
+      "WebFetch(domain:amazing-nasturtium-838f13.netlify.app)",
+      "Bash(start:*)"
     ]
   }
 }

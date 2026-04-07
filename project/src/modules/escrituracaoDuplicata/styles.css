@@ -8,7 +8,7 @@
   --border-color: #E5E5E5;
   --background: #F5F5F5;
 
-  font-family: Inter, system-ui, -apple-system, sans-serif;
+  font-family: 'Onest', sans-serif;
   color: var(--primary-text);
   background-color: var(--background);
   line-height: 1.5;

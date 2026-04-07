@@ -20,22 +20,23 @@ interface MenuItemProps {
   items?: MenuItemData[];
   onItemClick?: (route: string) => void;
   activeView?: string;
+  collapsed?: boolean;
 }
 
-const MenuItem = ({ 
-  icon: Icon, 
+const MenuItem = ({
+  icon: Icon,
   label,
   route,
-  isActive, 
+  isActive,
   isOpen,
   depth = 0,
-  onClick, 
+  onClick,
   items,
   onItemClick,
-  activeView
+  activeView,
+  collapsed = false,
 }: MenuItemProps) => {
   const hasSubmenu = items && items.length > 0;
-  const paddingLeft = depth * 12 + 16;
   const isMainMenuItem = depth === 0;
 
   const isItemActive = (item: MenuItemData): boolean => {
@@ -48,16 +49,46 @@ const MenuItem = ({
 
   const isCurrentItemActive = isActive || (hasSubmenu && items?.some(item => isItemActive(item)));
 
-  // Reduced font size for better readability and space optimization
-  const fontSize = isMainMenuItem ? 'text-[13px]' : 'text-[12px]';
+  const fontSize = isMainMenuItem ? 'text-sm' : 'text-[13px]';
   const handleClick = () => {
     if (hasSubmenu) {
       onClick?.();
     } else {
-      // Use the route from props
       onItemClick?.(route);
     }
   };
+
+  // Collapsed mode: only show icon for top-level items
+  if (collapsed && isMainMenuItem) {
+    return (
+      <div className="relative group">
+        <button
+          onClick={handleClick}
+          className={`w-full flex items-center justify-center py-2.5 transition-colors duration-150 ${
+            isCurrentItemActive
+              ? 'bg-[#ebf8ff] text-[#0070f2]'
+              : 'text-gray-700 hover:bg-gray-100'
+          }`}
+          title={label}
+        >
+          <Icon className={`w-[18px] h-[18px] transition-colors duration-150 ${
+            isCurrentItemActive ? 'text-[#0070f2]' : 'text-gray-600'
+          }`} />
+        </button>
+        {/* Tooltip */}
+        <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50">
+          {label}
+        </div>
+      </div>
+    );
+  }
+
+  // Don't render sub-items when collapsed
+  if (collapsed && !isMainMenuItem) {
+    return null;
+  }
+
+  const paddingLeft = depth * 12 + 16;
 
   return (
     <div>
@@ -80,7 +111,7 @@ const MenuItem = ({
         <span className={`${isMainMenuItem ? 'ml-2.5' : ''} flex-1 text-left font-medium leading-tight`}>{label}</span>
         {hasSubmenu && (
           <div className={`transition-colors duration-150 ${isCurrentItemActive ? 'text-[#0070f2]' : 'text-gray-400'}`}>
-            {isOpen 
+            {isOpen
               ? <ChevronDown className="w-5 h-5 ml-2" />
               : <ChevronRight className="w-5 h-5 ml-2" />
             }
@@ -102,6 +133,7 @@ const MenuItem = ({
               items={item.items}
               onItemClick={onItemClick}
               activeView={activeView}
+              collapsed={collapsed}
             />
           ))}
         </div>

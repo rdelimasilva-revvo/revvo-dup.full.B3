@@ -13,6 +13,7 @@ import { useDebug } from './context/DebugContext';
 import { initializeDebug, setDebugPanel } from './utils/debug';
 import { getStoredCompanyId, storeCompanyId } from './utils/storage';
 import { ROUTES } from './constants/routes';
+import { useAuthStore } from './store/authStore';
 import { RevvoLayout } from './components/Revvo/layout/RevvoLayout';
 import { NotificacoesDuplicatas } from './components/Revvo/pages/NotificacoesDuplicatas';
 import { NovosRecebedores } from './components/Revvo/pages/NovosRecebedores';
@@ -38,7 +39,7 @@ const AppRoutes: React.FC = () => {
   const { setCompanyId } = useCompany();
   const { setSetupReady } = useConfig();
   const { setDebugEnabled } = useDebug();
-  const isAuthenticated = true;
+  const isAuthenticated = !!useAuthStore((s) => s.user);
   useDebugUpdate();
 
   useEffect(() => {

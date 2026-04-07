@@ -6,7 +6,11 @@ import NewRule from '@/modules/automacoes/pages/NewRule';
 import RuleDetails from '@/modules/automacoes/pages/RuleDetails';
 import '@/modules/automacoes/index.css';
 
-function Automacoes() {
+interface AutomacoesProps {
+  defaultTab?: 'manifestacao' | 'escrituracao';
+}
+
+function Automacoes({ defaultTab = 'manifestacao' }: AutomacoesProps) {
   const basePath = '/app/automacoes';
   const { pathname } = useLocation();
   const subPath = pathname.replace(/^\/app\/automacoes/, '');
@@ -29,7 +33,7 @@ function Automacoes() {
       ) : isDetail ? (
         <RuleDetails basePath={basePath} ruleId={ruleId} />
       ) : (
-        <RulesList basePath={basePath} />
+        <RulesList basePath={basePath} defaultTab={defaultTab} />
       )}
     </div>
   );

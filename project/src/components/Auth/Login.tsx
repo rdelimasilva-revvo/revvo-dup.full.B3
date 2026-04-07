@@ -1,21 +1,14 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
-import { supabase } from '../../lib/supabase';
-import { useCompany } from '../../context/CompanyContext';
-import { useConfig } from '../../context/ConfigContext';
-import { storeCompanyId } from '../../utils/storage';
-import { translateSupabaseError } from '../../utils/errorTranslation';
+import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../../store/authStore';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<{ email?: string; password?: string }>({});
-  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { setCompanyId } = useCompany();
-  const { setSetupReady } = useConfig();
+  const { signIn, error, isLoading } = useAuthStore();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -29,11 +22,10 @@ const Login = () => {
 
   const validatePassword = (password: string) => {
     if (!password) return 'Informe sua senha';
-    if (password.length < 6) return 'A senha deve ter pelo menos 6 caracteres';
     return undefined;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const emailErr = validateEmail(formData.email);
     const passErr = validatePassword(formData.password);
@@ -42,71 +34,12 @@ const Login = () => {
       return;
     }
     setFieldErrors({});
-    try {
-      setError(null);
-      setIsLoading(true);
-      
-      const { data: authData, error: authError } = await supabase.auth
-        .signInWithPassword({ 
-          email: formData.email, 
-          password: formData.password 
-        });
+    signIn(formData.email, formData.password);
 
-      if (authError) throw authError;
-
-      if (!authData.user) throw new Error('No user data returned');
-
-      // Get user profile and company info
-      try {
-        // Try to get profile using email instead of UUID to avoid type mismatch
-        const { data: profile, error: profileError } = await supabase
-          .from('user_profile')
-          .select('company_id')
-          .eq('email', authData.user.email)
-          .maybeSingle();
-
-        if (profileError && profileError.code !== 'PGRST116') {
-          console.error('Profile error:', profileError);
-          // If profile doesn't exist, continue without company_id
-        }
-
-        if (profile?.company_id) {
-          const companyIdStr = profile.company_id.toString();
-          setCompanyId(companyIdStr);
-          storeCompanyId(companyIdStr);
-          
-          // Check setup status
-          const { data: settings, error: settingsError } = await supabase
-            .from('company_settings')
-            .select('setup_ready')
-            .eq('company_id', profile.company_id)
-            .maybeSingle();
-
-          if (!settingsError && settings) {
-            setSetupReady(settings.setup_ready);
-            
-            // Navigate based on setup status
-            if (settings.setup_ready) {
-              navigate('/app/home');
-            } else {
-              navigate('/config/start');
-            }
-          } else {
-            navigate('/app/home');
-          }
-        } else {
-          // No profile found, navigate to home
-          navigate('/app/home');
-        }
-      } catch (dbError) {
-        console.error('Database error:', dbError);
-        throw dbError;
-      }
-    } catch (error) {
-      setError(translateSupabaseError(error instanceof Error ? error.message : 'Erro ao fazer login'));
-      console.error('Login error:', error);
-    } finally {
-      setIsLoading(false);
+    // Check auth result after signIn (zustand is sync here)
+    const { user } = useAuthStore.getState();
+    if (user) {
+      navigate('/app/home');
     }
   };
 
@@ -129,8 +62,7 @@ const Login = () => {
             Olá, seja<br />bem-vindo!
           </h1>
           <p className="font-onest text-[20px] font-medium">
-            Cadastre-se hoje e subtítulo e etc<br />
-            subtítulo e etc subtítulo
+            A infratech inteligente para o crédito B2B
           </p>
         </div>
       </div>
@@ -144,7 +76,7 @@ const Login = () => {
             className="h-12 mb-8 mx-auto"
           />
           <h2 className="text-2xl font-onest font-semibold text-center mb-8">Para iniciar, faça seu login</h2>
-          
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <input
@@ -182,12 +114,6 @@ const Login = () => {
                   setFormData({ ...formData, password: e.target.value });
                   if (fieldErrors.password) setFieldErrors(prev => ({ ...prev, password: undefined }));
                 }}
-                onBlur={() => {
-                  if (formData.password) {
-                    const err = validatePassword(formData.password);
-                    if (err) setFieldErrors(prev => ({ ...prev, password: err }));
-                  }
-                }}
               />
               <button
                 type="button"
@@ -215,17 +141,11 @@ const Login = () => {
                 />
                 <span className="text-sm text-gray-600 font-onest">Lembrar-me</span>
               </label>
-              <button
-                type="button"
-                className="text-sm text-revvo-blue hover:underline font-onest"
-                onClick={() => navigate('/forgot-password')}
-              >
-                Esqueci minha senha
-              </button>
             </div>
 
             <button
               type="submit"
+              disabled={isLoading}
               className="w-full h-input bg-revvo-dark-blue text-white rounded-md hover:bg-opacity-90 transition-colors text-base font-onest font-semibold"
             >
               Entrar
@@ -234,26 +154,6 @@ const Login = () => {
               <p className="mt-2 text-error text-sm">{error}</p>
             )}
           </form>
-
-          <div className="mt-6 text-center">
-            <div className="flex items-center justify-center">
-              <div className="border-t border-gray-2 flex-grow"></div>
-              <span className="px-4 text-gray-3 font-onest">ou</span>
-              <div className="border-t border-gray-2 flex-grow"></div>
-            </div>
-
-            <button className="mt-4 w-full h-input border border-gray-2 rounded-md flex items-center justify-center gap-2 text-base font-onest font-light">
-              <img src="https://www.google.com/favicon.ico" alt="Google" className="w-4 h-4" />
-              Continuar com Google
-            </button>
-
-            <p className="mt-6 text-sm font-onest text-[16px]">
-              Não possui uma conta?{' '}
-              <Link to="/signup" className="text-revvo-blue hover:underline">
-                Criar conta
-              </Link>
-            </p>
-          </div>
         </div>
       </div>
     </div>

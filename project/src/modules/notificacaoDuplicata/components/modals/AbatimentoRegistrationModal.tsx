@@ -124,7 +124,7 @@ export function AbatimentoRegistrationModal({
     <div
       className="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000] p-4"
       onClick={onClose}
-      style={{ fontFamily: '"72", "72full", Arial, Helvetica, sans-serif' }}
+      style={{ fontFamily: "'Onest', sans-serif" }}
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-title"
